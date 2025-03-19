@@ -16,12 +16,16 @@ KOREN_EXTRA = 'KMNPC'
 # 'ץצ': 3290, 		צ, c
 
 JSON_FOLDER = os.path.join(settings.BASE_DIR, 'djangotanach', 'json','all')
+EN_FOLDER = os.path.join(settings.BASE_DIR, 'djangotanach', 'json','eng')
 CSV_FOLDER = os.path.join(settings.BASE_DIR, 'djangotanach', 'csv')
 
-def save_file(fname, datas):
+def save_file(fname, datas, is_csv=True):
     csvfile=open(f'{CSV_FOLDER}/{fname}','w')
-    cwriter = csv.writer(csvfile)
-    cwriter.writerows(datas)
+    if is_csv:
+        cwriter = csv.writer(csvfile)
+        cwriter.writerows(datas)
+    else:
+        for line in datas:csvfile.write(f"{line}\n")
                      
 def a():
     not_found=defaultdict(lambda: 0)
@@ -61,4 +65,22 @@ def a():
     save_file('counts.csv',counts)
     # {'ם': 41451, 'ץ': 3290, 'ך': 14070, 'ן': 15299, 'ף': 2562, '\u200d': 79, '־': 418})
 
-a()
+def b():
+    en_data=[]
+    counts = []
+    
+    for bkcount,book in enumerate(TANACH_BOOKS):  
+        data = json.loads(open(f'{EN_FOLDER}/en{bkcount+1}.json').read())
+        print(bkcount+1,':', book)
+        print('chapters:',len(data['text']))
+        vcount = 0
+        counts.append([len(c) for c in data['text']])
+        for chapter in data['text']:            
+            vcount += len(chapter)
+            for line in chapter: en_data.append(line)
+        print('verses:',vcount)
+        print('-'*10)
+    save_file('en_words.csv',en_data,is_csv=False)
+    save_file('en_counts.csv',counts)
+
+b()
