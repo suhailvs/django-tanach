@@ -1,5 +1,4 @@
-from django.core.management.base import BaseCommand, CommandError
-from djangotanach.models import Word
+from django.core.management.base import BaseCommand
 import csv
 import importlib.resources
 """
@@ -10,8 +9,8 @@ Kesuvim: 83,640 words (
 """
 def calculate_line_number(book_no, chapter, line):
     index = 0
-    with importlib.resources.open_text("djangotanach.csv","counts.csv") as f:
-        t_count = list(csv.reader(f))
+    with importlib.resources.open_text("djangotanach.csv","counts.csv") as csv_file:
+        t_count = list(csv.reader(csv_file))
         # book = t_count[book_no+1]
         for i in range(len(t_count)):
             chapter_count = t_count[i]
@@ -41,8 +40,8 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         lineno = calculate_line_number(1,1,1)-1 # since index starts with zero
-        with importlib.resources.open_text("djangotanach.csv","words.csv") as f:
-            words_list = list(csv.reader(f))
+        with importlib.resources.open_text("djangotanach.csv","words.csv") as csv_file:
+            words_list = list(csv.reader(csv_file))
             line = words_list[lineno]
             self.stdout.write(f'line:{line}')
         

@@ -4,9 +4,9 @@ from django.db import models
 
 class Word(models.Model):
     """Hebrew word in the Tanach"""
-    book = models.IntegerField()
-    chapter = models.IntegerField()
-    line = models.IntegerField()
+    book = models.IntegerField(db_index=True)
+    chapter = models.IntegerField(db_index=True)
+    line = models.IntegerField(db_index=True)
     position = models.IntegerField()
     token = models.CharField(max_length=50)
     meaning = models.CharField(max_length=50)
